@@ -37,8 +37,15 @@ def load_trips(engine):
         print("No parquet files found in data/trips")
         return
 
+    sample_rows = os.getenv("TRIP_SAMPLE_ROWS")
+
     for file in files:
         df = pd.read_parquet(file)
+
+        # Optional sampling for faster dev runs
+        if sample_rows and len(df) > int(sample_rows):
+            df = df.sample(n=int(sample_rows), random_state=42)
+
         df["_source_file"] = file.name
         df["_loaded_at"] = datetime.now()
 
@@ -59,7 +66,6 @@ def load_trips(engine):
             chunksize=50000,
         )
         print(f"{file.name}: {len(df):,} rows loaded")
-
 
 # ---------- 5. Load latest vehicles CSV (full refresh) ----------
 def load_vehicles(engine):

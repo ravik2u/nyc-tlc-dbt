@@ -1,0 +1,36 @@
+name: 'nyc_tlc'
+version: '1.0.0'
+config-version: 2
+
+profile: 'nyc_tlc'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  nyc_tlc:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+
+      models:
+  nyc_tlc:
+    staging:
+      +schema: staging
+      +materialized: view
+    marts:
+      +schema: marts
+      +materialized: table
+
+seeds:
+  nyc_tlc:
+    +schema: reference
